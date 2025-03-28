@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetooth Robot Control</title>
+    <link rel="stylesheet" href="css/styel.css">
+</head>
+<body>
+    <h2>Bluetooth Robot Control</h2>
+    
+    <button onclick="connectBluetooth()">Connect Bluetooth</button>
+    <p id="status">Status: Disconnected</p>
+    <p>🔋 Battery: <span id="battery-level">--%</span></p>
+    <p>🚧 Distance: <span id="distance">-- cm</span></p>
+
+    <!-- Joystick Control -->
+    <div id="joystick-container">
+        <canvas id="joystick"></canvas>
+    </div>
+
+    <br>
+    <label>Speed: <input type="range" min="0" max="255" value="128" id="speed" oninput="sendSpeed()"></label>
+    <br>
+    <button onclick="startVoiceCommand()">🎤 Voice Command</button>
+    
+    <script src="js/main.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/joystic.js"></script>
+</body>
+</html>
