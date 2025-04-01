@@ -1,42 +1,46 @@
 let bluetoothDevice;
-let characteristic;
+let writer;
 
+// Connect to Bluetooth Device
 async function connectBluetooth() {
     try {
         bluetoothDevice = await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
             optionalServices: ['battery_service']
         });
+
         const server = await bluetoothDevice.gatt.connect();
-        characteristic = await server.getPrimaryService('battery_service');
-        document.getElementById("status").innerText = "Status: Connected";
-        readBatteryLevel();
+        document.getElementById("status").innerText = "Status: Connected ✅";
+
+        const batteryService = await server.getPrimaryService('battery_service');
+        const batteryLevel = await batteryService.getCharacteristic('battery_level');
+
+        batteryLevel.readValue().then(value => {
+            let batteryPercent = value.getUint8(0);
+            document.getElementById("battery-level").innerText = batteryPercent + "%";
+        });
+
     } catch (error) {
-        alert("Bluetooth Connection Failed!");
+        console.log("Bluetooth connection failed:", error);
+        document.getElementById("status").innerText = "Status: Disconnected ❌";
     }
 }
 
-async function readBatteryLevel() {
-    try {
-        const batteryService = await bluetoothDevice.gatt.getPrimaryService('battery_service');
-        const batteryCharacteristic = await batteryService.getCharacteristic('battery_level');
-        const batteryData = await batteryCharacteristic.readValue();
-        let batteryLevel = batteryData.getUint8(0);
-        document.getElementById("battery-level").innerText = batteryLevel + "%";
-    } catch (error) {
-        document.getElementById("battery-level").innerText = "Error";
-    }
-}
-
+// Send Movement Commands
 function sendCommand(command) {
-    if (bluetoothDevice) {
-        console.log("Sending:", command);
-    } else {
-        alert("Connect to Bluetooth first!");
-    }
+    console.log(`Sending command: ${command}`);
+    // Send command over Bluetooth (Replace with actual Bluetooth logic)
 }
 
+// Movement Functions
+function moveForward() { sendCommand('F'); }
+function moveBackward() { sendCommand('B'); }
+function moveLeft() { sendCommand('L'); }
+function moveRight() { sendCommand('R'); }
+function stopMovement() { sendCommand('S'); }
+
+// Speed Control
 function sendSpeed() {
     let speed = document.getElementById("speed").value;
-    sendCommand("S" + speed);
+    sendCommand(`SPEED_${speed}`);
 }

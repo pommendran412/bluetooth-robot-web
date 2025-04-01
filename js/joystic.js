@@ -1,38 +1,42 @@
-let joystick = document.getElementById("joystick");
-let ctx = joystick.getContext("2d");
-let joystickCenter = { x: 100, y: 100 };
-let active = false;
+let joystickCanvas = document.getElementById("joystick");
+let ctx = joystickCanvas.getContext("2d");
 
-joystick.addEventListener("touchstart", startMove);
-joystick.addEventListener("touchmove", moveJoystick);
-joystick.addEventListener("touchend", stopMove);
+joystickCanvas.width = 150;
+joystickCanvas.height = 150;
 
-function startMove(event) {
-    active = true;
-    moveJoystick(event);
-}
+let centerX = joystickCanvas.width / 2;
+let centerY = joystickCanvas.height / 2;
+let radius = 40;
 
-function moveJoystick(event) {
-    if (!active) return;
-    let touch = event.touches[0];
-    let x = touch.clientX - joystick.offsetLeft;
-    let y = touch.clientY - joystick.offsetTop;
-
-    ctx.clearRect(0, 0, joystick.width, joystick.height);
+function drawJoystick(x, y) {
+    ctx.clearRect(0, 0, joystickCanvas.width, joystickCanvas.height);
     ctx.beginPath();
-    ctx.arc(x, y, 30, 0, Math.PI * 2);
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fillStyle = "blue";
     ctx.fill();
-
-    // Determine direction
-    if (x < 70) sendCommand('3'); // Left
-    else if (x > 130) sendCommand('4'); // Right
-    else if (y < 70) sendCommand('1'); // Forward
-    else if (y > 130) sendCommand('2'); // Backward
 }
 
-function stopMove() {
-    active = false;
-    ctx.clearRect(0, 0, joystick.width, joystick.height);
-    sendCommand('5'); // Stop when released
-}
+drawJoystick(centerX, centerY);
+
+joystickCanvas.addEventListener("mousemove", function (event) {
+    let rect = joystickCanvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+
+    let dx = x - centerX;
+    let dy = y - centerY;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 50) {
+        drawJoystick(x, y);
+
+        if (dy < -20) moveForward();
+        else if (dy > 20) moveBackward();
+        else if (dx < -20) moveLeft();
+        else if (dx > 20) moveRight();
+    }
+});
+
+joystickCanvas.addEventListener("mouseleave", function () {
+    drawJoystick(centerX, centerY);
+});

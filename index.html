@@ -9,10 +9,21 @@
 <body>
     <h2>Bluetooth Robot Control</h2>
     
-    <button onclick="connectBluetooth()">Connect Bluetooth</button>
+    <button onclick="connectBluetooth()">🔵 Connect Bluetooth</button>
     <p id="status">Status: Disconnected</p>
     <p>🔋 Battery: <span id="battery-level">--%</span></p>
     <p>🚧 Distance: <span id="distance">-- cm</span></p>
+
+    <!-- Movement Control Buttons -->
+    <div id="movement-controls">
+        <button onclick="moveForward()">⬆️ Forward</button>
+        <br>
+        <button onclick="moveLeft()">⬅️ Left</button>
+        <button onclick="stopMovement()">🛑 Stop</button>
+        <button onclick="moveRight()">➡️ Right</button>
+        <br>
+        <button onclick="moveBackward()">⬇️ Backward</button>
+    </div>
 
     <!-- Joystick Control -->
     <div id="joystick-container">
